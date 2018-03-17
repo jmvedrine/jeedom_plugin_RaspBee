@@ -14,7 +14,7 @@ echo 10 > /tmp/RaspBEE_dep
 actual=`nodejs -v`;
 echo "Version actuelle : ${actual}"
 
-if [[ $actual == *"4."* || $actual == *"5."* ]]
+if [[ $actual == "v8."* || $actual == "v9."* || $actual == "v10."* ]]
 then
   echo "Ok, version suffisante";
 else
@@ -25,31 +25,23 @@ else
   echo 30 > /tmp/RaspBEE_dep
   if [[ $arch == "armv6l" ]]
   then
-    echo "Raspberry 1 détecté, utilisation du paquet pour armv6"
-    sudo rm /etc/apt/sources.list.d/nodesource.list
+    echo "Raspberry 1 détecté, utilisation du paquet pour armv6l"
+    sudo rm -f /etc/apt/sources.list.d/nodesource.list &>/dev/null
     wget http://node-arm.herokuapp.com/node_latest_armhf.deb
     sudo dpkg -i node_latest_armhf.deb
     sudo ln -s /usr/local/bin/node /usr/local/bin/nodejs
     rm node_latest_armhf.deb
-  fi
-
-  if [[ $arch == "aarch64" ]]
-  then
-    wget http://dietpi.com/downloads/binaries/c2/nodejs_5-1_arm64.deb
-    sudo dpkg -i nodejs_5-1_arm64.deb
-    sudo ln -s /usr/local/bin/node /usr/local/bin/nodejs
-    rm nodejs_5-1_arm64.deb
-  fi
-
-  if [[ $arch != "aarch64" && $arch != "armv6l" ]]
-  then
+    
+  else
     echo "Utilisation du dépot officiel"
-    curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+    sudo apt-key update
+    sudo apt-get install -y nodejs  
   fi
-  
+
   new=`nodejs -v`;
   echo "Version actuelle : ${new}"
+
 fi
 
 echo 70 > /tmp/RaspBEE_dep
